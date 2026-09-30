@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Archive, BookOpen, Camera, Check, ChevronDown, Edit3, FileText, GraduationCap,
-  Home, ImagePlus, MoreVertical, Plus, Search, Settings, Trash2, Users, X,
+  Archive, BookOpen, Check, ChevronDown, FileText, GraduationCap,
+  Home, ImagePlus, MoreVertical, Plus, Search, Settings, Trash2, Users,
 } from 'lucide-react';
 import { GradesTable } from './components/GradesTable';
+import { DailyQuizTab } from './components/DailyQuizTab';
 import {
   db,
   seedDatabase,
@@ -124,23 +125,11 @@ function App() {
   ] as const;
 
   if (loading) {
-    return (
-      <div className="app-shell">
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div>جاري التحميل...</div>
-        </div>
-      </div>
-    );
+    return <div className="app-shell"><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>جاري التحميل...</div></div>;
   }
 
   if (!appState) {
-    return (
-      <div className="app-shell">
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div>حدث خطأ في تحميل البيانات</div>
-        </div>
-      </div>
-    );
+    return <div className="app-shell"><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>حدث خطأ في تحميل البيانات</div></div>;
   }
 
   return (
@@ -194,7 +183,10 @@ function App() {
           />
         )}
 
-        {tab === 'quiz' && <Placeholder icon={<FileText />} title="الاختبار اليومي" text="اختر طالباً عشوائياً وسجل درجة الشفهي بسرعة." action="بدء الاختبار" />}
+        {tab === 'quiz' && (
+          <DailyQuizTab classroomId={appState.classroom.id} academicYear={appState.classroom.academicYear} students={appState.students} />
+        )}
+
         {tab === 'attendance' && <Placeholder icon={<Check />} title="سجل الحضور" text="سجل حضور الطلاب وغيابهم لهذا اليوم." action="بدء تسجيل الحضور" />}
         {tab === 'absence' && <Placeholder icon={<Archive />} title="سجل الغياب" text="يمكنك استعراض سجلات الغياب حسب التاريخ." action="اختيار التاريخ" />}
         {tab === 'backup' && <Placeholder icon={<Settings />} title="النسخ الاحتياطي" text="احفظ بياناتك محلياً أو صدّرها كملف JSON." action="تصدير البيانات" />}
@@ -251,14 +243,7 @@ function HomePage(p: HomePageProps) {
 
         <div className="profile-row">
           <button className={'logo-upload ' + (p.logo ? 'has-logo' : '')} onClick={() => p.fileRef.current?.click()}>
-            {p.logo ? (
-              <img src={p.logo} alt="شعار المدرسة" />
-            ) : (
-              <>
-                <ImagePlus size={25} />
-                <small>إضافة شعار</small>
-              </>
-            )}
+            {p.logo ? <img src={p.logo} alt="شعار المدرسة" /> : <><ImagePlus size={25} /><small>إضافة شعار</small></>}
           </button>
           <input ref={p.fileRef} type="file" accept="image/*" hidden onChange={p.chooseLogo} />
 
@@ -285,9 +270,7 @@ function HomePage(p: HomePageProps) {
             <span className="eyebrow">التنظيم الدراسي</span>
             <h2>المرحلة والشعبة</h2>
           </div>
-          <button className="add-button" onClick={p.onAddStudent}>
-            <Plus size={17} /> إضافة
-          </button>
+          <button className="add-button" onClick={p.onAddStudent}><Plus size={17} /> إضافة</button>
         </div>
 
         <div className="study-grid">
@@ -332,9 +315,7 @@ function HomePage(p: HomePageProps) {
                     <strong>{student.fullName}</strong>
                     <small>#{digits(student.serialNumber)}</small>
                   </div>
-                  <button onClick={() => { p.setSearch(''); p.setTab('students'); }}>
-                    <ChevronDown size={18} />
-                  </button>
+                  <button onClick={() => { p.setSearch(''); p.setTab('students'); }}><ChevronDown size={18} /></button>
                 </div>
               ))
             ) : (
@@ -367,9 +348,7 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
           <h1>الأسماء والدرجات</h1>
           <p>أضف أسماء الطلاب وسجل درجاتهم وتابع تقدمهم.</p>
         </div>
-        <button className="primary-button" onClick={onAdd}>
-          <Plus size={18} /> إضافة طالب
-        </button>
+        <button className="primary-button" onClick={onAdd}><Plus size={18} /> إضافة طالب</button>
       </div>
 
       {viewMode === 'list' ? (
@@ -385,9 +364,7 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
                 <span className="serial">{digits(student.serialNumber)}</span>
                 <div className="avatar small">{student.fullName.slice(0, 1)}</div>
                 <input value={student.fullName} onChange={(e) => onUpdate(student.id, e.target.value)} />
-                <button className="delete-button" onClick={() => onRemove(student.id)}>
-                  <Trash2 size={17} />
-                </button>
+                <button className="delete-button" onClick={() => onRemove(student.id)}><Trash2 size={17} /></button>
               </div>
             ))}
           </div>
@@ -397,34 +374,8 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
       )}
 
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '16px' }}>
-        <button
-          onClick={() => setViewMode('list')}
-          style={{
-            padding: '8px 14px',
-            borderRadius: '8px',
-            background: viewMode === 'list' ? '#173b5f' : '#e8f0f3',
-            color: viewMode === 'list' ? '#fff' : '#2b5a7e',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '11px',
-          }}
-        >
-          قائمة الأسماء
-        </button>
-        <button
-          onClick={() => setViewMode('grades')}
-          style={{
-            padding: '8px 14px',
-            borderRadius: '8px',
-            background: viewMode === 'grades' ? '#173b5f' : '#e8f0f3',
-            color: viewMode === 'grades' ? '#fff' : '#2b5a7e',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '11px',
-          }}
-        >
-          جدول الدرجات
-        </button>
+        <button onClick={() => setViewMode('list')} style={{ padding: '8px 14px', borderRadius: '8px', background: viewMode === 'list' ? '#173b5f' : '#e8f0f3', color: viewMode === 'list' ? '#fff' : '#2b5a7e', border: 'none', cursor: 'pointer', fontSize: '11px' }}>قائمة الأسماء</button>
+        <button onClick={() => setViewMode('grades')} style={{ padding: '8px 14px', borderRadius: '8px', background: viewMode === 'grades' ? '#173b5f' : '#e8f0f3', color: viewMode === 'grades' ? '#fff' : '#2b5a7e', border: 'none', cursor: 'pointer', fontSize: '11px' }}>جدول الدرجات</button>
       </div>
     </div>
   );
@@ -436,9 +387,7 @@ function Placeholder({ icon, title, text, action }: { icon: React.ReactNode; tit
       <div className="empty-icon">{icon}</div>
       <h1>{title}</h1>
       <p>{text}</p>
-      <button className="primary-button">
-        <Plus size={18} /> {action}
-      </button>
+      <button className="primary-button"><Plus size={18} /> {action}</button>
     </div>
   );
 }
