@@ -1,0 +1,60 @@
+.backup-page { max-width: 760px; }
+
+.backup-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 26px 22px;
+}
+
+.backup-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #edf5f4;
+  color: #277c63;
+  display: grid;
+  place-items: center;
+}
+
+.backup-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.backup-meta strong {
+  font-size: 16px;
+}
+
+.backup-meta span {
+  color: #6d7c89;
+  font-size: 12px;
+}
+
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondary-button {
+  background: #edf2f6;
+  color: #1b3d5b;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.backup-status {
+  background: #edf8ef;
+  color: #2f7d57;
+  border: 1px solid #caebd5;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+}
