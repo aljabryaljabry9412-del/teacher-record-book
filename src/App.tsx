@@ -129,23 +129,11 @@ function App() {
   ] as const;
 
   if (loading) {
-    return (
-      <div className="app-shell">
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div>جاري التحميل...</div>
-        </div>
-      </div>
-    );
+    return <div className="app-shell"><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>جاري التحميل...</div></div>;
   }
 
   if (!appState) {
-    return (
-      <div className="app-shell">
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div>حدث خطأ في تحميل البيانات</div>
-        </div>
-      </div>
-    );
+    return <div className="app-shell"><div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>حدث خطأ في تحميل البيانات</div></div>;
   }
 
   return (
@@ -199,33 +187,10 @@ function App() {
           />
         )}
 
-        {tab === 'quiz' && (
-          <DailyQuizTab
-            classroomId={appState.classroom.id}
-            academicYear={appState.classroom.academicYear}
-            students={appState.students}
-          />
-        )}
-
-        {tab === 'attendance' && (
-          <AttendanceTab
-            classroomId={appState.classroom.id}
-            students={appState.students}
-          />
-        )}
-
-        {tab === 'absence' && (
-          <AbsenceLog classroomId={appState.classroom.id} students={appState.students} />
-        )}
-
-        {tab === 'backup' && (
-          <Placeholder
-            icon={<Settings />}
-            title="النسخ الاحتياطي"
-            text="احفظ بياناتك محلياً أو صدّرها كملف JSON."
-            action="تصدير البيانات"
-          />
-        )}
+        {tab === 'quiz' && <DailyQuizTab classroomId={appState.classroom.id} academicYear={appState.classroom.academicYear} students={appState.students} />}
+        {tab === 'attendance' && <AttendanceTab classroomId={appState.classroom.id} students={appState.students} />}
+        {tab === 'absence' && <Placeholder icon={<Archive />} title="سجل الغياب" text="يمكنك استعراض سجلات الغياب حسب التاريخ." action="اختيار التاريخ" />}
+        {tab === 'backup' && <Placeholder icon={<Settings />} title="النسخ الاحتياطي" text="احفظ بياناتك محلياً أو صدّرها كملف JSON." action="تصدير البيانات" />}
       </main>
 
       <nav className="bottom-nav">
@@ -259,7 +224,6 @@ interface HomePageProps {
 function HomePage(p: HomePageProps) {
   return (
     <div className="stack">
-      {/* بطاقة البطل */}
       <section className="hero-card">
         <div className="hero-copy">
           <span className="eyebrow">مرحباً بك</span>
@@ -269,99 +233,55 @@ function HomePage(p: HomePageProps) {
         <div className="hero-illustration"><BookOpen size={70} strokeWidth={1.3} /></div>
       </section>
 
-      {/* بطاقة معلومات المدرسة */}
       <section className="card profile-card">
         <div className="section-title">
           <div>
             <span className="eyebrow">بيانات السجل</span>
             <h2>معلومات المدرسة</h2>
           </div>
-          <button className="more-button" aria-label="خيارات إضافية">
-            <MoreVertical size={19} />
-          </button>
+          <button className="more-button"><MoreVertical size={19} /></button>
         </div>
 
         <div className="profile-row">
-          <button
-            className={'logo-upload ' + (p.logo ? 'has-logo' : '')}
-            onClick={() => p.fileRef.current?.click()}
-            aria-label="تحميل الشعار"
-          >
-            {p.logo ? (
-              <img src={p.logo} alt="شعار المدرسة" />
-            ) : (
-              <>
-                <ImagePlus size={25} />
-                <small>إضافة شعار</small>
-              </>
-            )}
+          <button className={'logo-upload ' + (p.logo ? 'has-logo' : '')} onClick={() => p.fileRef.current?.click()}>
+            {p.logo ? <img src={p.logo} alt="شعار المدرسة" /> : <><ImagePlus size={25} /><small>إضافة شعار</small></>}
           </button>
-          <input
-            ref={p.fileRef}
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={p.chooseLogo}
-            aria-label="اختيار ملف الشعار"
-          />
+          <input ref={p.fileRef} type="file" accept="image/*" hidden onChange={p.chooseLogo} />
 
           <div className="fields">
             <label>
               اسم المدرسة
-              <input
-                value={p.profile.schoolName}
-                onChange={(e) => p.onProfileUpdate({ schoolName: e.target.value })}
-                placeholder="أدخل اسم المدرسة"
-              />
+              <input value={p.profile.schoolName} onChange={(e) => p.onProfileUpdate({ schoolName: e.target.value })} />
             </label>
             <label>
               اسم المدرس
-              <input
-                value={p.profile.teacherName}
-                onChange={(e) => p.onProfileUpdate({ teacherName: e.target.value })}
-                placeholder="أدخل اسم المدرس"
-              />
+              <input value={p.profile.teacherName} onChange={(e) => p.onProfileUpdate({ teacherName: e.target.value })} />
             </label>
             <label>
               اسم المادة
-              <input
-                value={p.profile.subjectName}
-                onChange={(e) => p.onProfileUpdate({ subjectName: e.target.value })}
-                placeholder="أدخل اسم المادة"
-              />
+              <input value={p.profile.subjectName} onChange={(e) => p.onProfileUpdate({ subjectName: e.target.value })} />
             </label>
           </div>
         </div>
       </section>
 
-      {/* بطاقة المرحلة والشعبة */}
       <section className="card">
         <div className="section-title">
           <div>
             <span className="eyebrow">التنظيم الدراسي</span>
             <h2>المرحلة والشعبة</h2>
           </div>
-          <button className="add-button" onClick={p.onAddStudent} aria-label="إضافة طالب">
-            <Plus size={17} /> إضافة
-          </button>
+          <button className="add-button" onClick={p.onAddStudent}><Plus size={17} /> إضافة</button>
         </div>
 
         <div className="study-grid">
           <label>
             المرحلة الدراسية
-            <input
-              value={p.classroom.stage}
-              onChange={(e) => p.onClassroomUpdate({ stage: e.target.value })}
-              placeholder="مثال: الأول المتوسط"
-            />
+            <input value={p.classroom.stage} onChange={(e) => p.onClassroomUpdate({ stage: e.target.value })} />
           </label>
           <label>
             الشعبة <span className="optional">اختياري</span>
-            <input
-              value={p.classroom.division}
-              onChange={(e) => p.onClassroomUpdate({ division: e.target.value })}
-              placeholder="مثال: أ"
-            />
+            <input value={p.classroom.division} onChange={(e) => p.onClassroomUpdate({ division: e.target.value })} />
           </label>
         </div>
 
@@ -371,7 +291,6 @@ function HomePage(p: HomePageProps) {
         </div>
       </section>
 
-      {/* بطاقة البحث السريع عن الطلاب */}
       <section className="card">
         <div className="section-title">
           <div>
@@ -383,12 +302,7 @@ function HomePage(p: HomePageProps) {
 
         <div className="search-box">
           <Search size={19} />
-          <input
-            value={p.search}
-            onChange={(e) => p.setSearch(e.target.value)}
-            placeholder="ابحث باسم الطالب..."
-            aria-label="بحث الطالب"
-          />
+          <input value={p.search} onChange={(e) => p.setSearch(e.target.value)} placeholder="ابحث باسم الطالب..." />
           <kbd>⌘ K</kbd>
         </div>
 
@@ -402,15 +316,7 @@ function HomePage(p: HomePageProps) {
                     <strong>{student.fullName}</strong>
                     <small>#{digits(student.serialNumber)}</small>
                   </div>
-                  <button
-                    onClick={() => {
-                      p.setSearch('');
-                      p.setTab('students');
-                    }}
-                    aria-label="الذهاب إلى سجل الطالب"
-                  >
-                    <ChevronDown size={18} />
-                  </button>
+                  <button onClick={() => { p.setSearch(''); p.setTab('students'); }}><ChevronDown size={18} /></button>
                 </div>
               ))
             ) : (
@@ -443,9 +349,7 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
           <h1>الأسماء والدرجات</h1>
           <p>أضف أسماء الطلاب وسجل درجاتهم وتابع تقدمهم.</p>
         </div>
-        <button className="primary-button" onClick={onAdd}>
-          <Plus size={18} /> إضافة طالب
-        </button>
+        <button className="primary-button" onClick={onAdd}><Plus size={18} /> إضافة طالب</button>
       </div>
 
       {viewMode === 'list' ? (
@@ -460,14 +364,8 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
               <div className="list-row" key={student.id}>
                 <span className="serial">{digits(student.serialNumber)}</span>
                 <div className="avatar small">{student.fullName.slice(0, 1)}</div>
-                <input
-                  value={student.fullName}
-                  onChange={(e) => onUpdate(student.id, e.target.value)}
-                  placeholder="اسم الطالب"
-                />
-                <button className="delete-button" onClick={() => onRemove(student.id)} aria-label="حذف الطالب">
-                  <Trash2 size={17} />
-                </button>
+                <input value={student.fullName} onChange={(e) => onUpdate(student.id, e.target.value)} />
+                <button className="delete-button" onClick={() => onRemove(student.id)}><Trash2 size={17} /></button>
               </div>
             ))}
           </div>
@@ -477,84 +375,20 @@ function StudentsPage({ students, classroomId, academicYear, onAdd, onUpdate, on
       )}
 
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '16px' }}>
-        <button
-          onClick={() => setViewMode('list')}
-          style={{
-            padding: '8px 14px',
-            borderRadius: '8px',
-            background: viewMode === 'list' ? '#173b5f' : '#e8f0f3',
-            color: viewMode === 'list' ? '#fff' : '#2b5a7e',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '11px',
-          }}
-        >
-          قائمة الأسماء
-        </button>
-        <button
-          onClick={() => setViewMode('grades')}
-          style={{
-            padding: '8px 14px',
-            borderRadius: '8px',
-            background: viewMode === 'grades' ? '#173b5f' : '#e8f0f3',
-            color: viewMode === 'grades' ? '#fff' : '#2b5a7e',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '11px',
-          }}
-        >
-          جدول الدرجات
-        </button>
+        <button onClick={() => setViewMode('list')} style={{ padding: '8px 14px', borderRadius: '8px', background: viewMode === 'list' ? '#173b5f' : '#e8f0f3', color: viewMode === 'list' ? '#fff' : '#2b5a7e', border: 'none', cursor: 'pointer', fontSize: '11px' }}>قائمة الأسماء</button>
+        <button onClick={() => setViewMode('grades')} style={{ padding: '8px 14px', borderRadius: '8px', background: viewMode === 'grades' ? '#173b5f' : '#e8f0f3', color: viewMode === 'grades' ? '#fff' : '#2b5a7e', border: 'none', cursor: 'pointer', fontSize: '11px' }}>جدول الدرجات</button>
       </div>
     </div>
   );
 }
 
-interface AbsenceLogProps {
-  classroomId: string;
-  students: DbStudent[];
-}
-
-function AbsenceLog({ classroomId, students }: AbsenceLogProps) {
-  return (
-    <div className="stack">
-      <div className="page-heading">
-        <div>
-          <span className="eyebrow">التقارير</span>
-          <h1>سجل الغياب</h1>
-          <p>استعرض سجلات الغياب والملاحظات حسب الطالب أو التاريخ.</p>
-        </div>
-      </div>
-
-      <section className="card">
-        <div className="section-title">
-          <span className="eyebrow">جاري التطوير</span>
-          <h2>سيتم إضافة سجل الغياب المفصل قريباً</h2>
-        </div>
-        <p style={{ color: '#8a9aa4', marginTop: '16px' }}>
-          قريباً: عرض سجل الغياب التاريخي، والملاحظات، وتقارير الغياب المتكررة.
-        </p>
-      </section>
-    </div>
-  );
-}
-
-interface PlaceholderProps {
-  icon: React.ReactNode;
-  title: string;
-  text: string;
-  action: string;
-}
-
-function Placeholder({ icon, title, text, action }: PlaceholderProps) {
+function Placeholder({ icon, title, text, action }: { icon: React.ReactNode; title: string; text: string; action: string }) {
   return (
     <div className="empty-page">
       <div className="empty-icon">{icon}</div>
       <h1>{title}</h1>
       <p>{text}</p>
-      <button className="primary-button">
-        <Plus size={18} /> {action}
-      </button>
+      <button className="primary-button"><Plus size={18} /> {action}</button>
     </div>
   );
 }
